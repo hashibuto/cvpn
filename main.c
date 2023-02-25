@@ -2,14 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-char * get_command(int argc, char *argv[]) {
-    if (argc > 1) {
-        return argv[1];
-    }
-
-    return NULL;
-}
-
 struct ServeCommandNs {
     char iface[20];
     char network[20];
@@ -19,6 +11,15 @@ struct ServeCommandNs {
 struct CallCommandNs {
 
 };
+
+// get_command returns the command portion of the arguments if available, or NULL
+char * get_command(int argc, char *argv[]) {
+    if (argc > 1) {
+        return argv[1];
+    }
+
+    return NULL;
+}
 
 // parse_serve parses the serve command
 struct ServeCommandNs *parse_serve(int argc, char *argv[]) {
