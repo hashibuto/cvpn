@@ -15,6 +15,8 @@ int serve(int port) {
     struct timeval timeout;
     struct sockaddr_in client;
     size_t client_addr_size;
+    int max_packet_size = 2048;
+    char in_buffer[max_packet_size];
 
     server_fd = socket(AF_INET, SOCK_DGRAM, 0);
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
@@ -57,6 +59,14 @@ int serve(int port) {
                         close(client_fd);
                     } else {
                         FD_SET(client_fd, &set);
+                    }
+                    printf("CONN: arrived from %s on port %d\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
+                } else {
+                    // Client data is arriving
+                    int nbytes = read(fd, &in_buffer, max_packet_size);
+                    if (nbytes <= 0) {
+                        close(fd);
+                        FD_CLR(fd, &set);
                     }
                 }
             }
